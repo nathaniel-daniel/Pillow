@@ -40,7 +40,7 @@ import tempfile
 import warnings
 from collections.abc import Callable, Iterator, MutableMapping, Sequence
 from enum import IntEnum
-from types import ModuleType
+from types import ModuleType, TracebackType
 from typing import IO, Any, Literal, Protocol, cast
 
 # VERSION was removed in Pillow 6.0.0.
@@ -601,10 +601,15 @@ class Image:
         return new
 
     # Context manager support
-    def __enter__(self):
+    def __enter__(self) -> Image:
         return self
 
-    def __exit__(self, *args):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None = None,
+        exc_val: BaseException | None = None,
+        exc_tb: TracebackType | None = None,
+    ) -> None:
         from . import ImageFile
 
         if isinstance(self, ImageFile.ImageFile):
